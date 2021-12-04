@@ -72,6 +72,22 @@ def standaritzador(data):
     return scaler.transform(data)
 
 
+def gridSearch(estimator, param_grid, model_name, X_train, y_train):
+    """
+    Executes the GridSearchCV function ans shows the statistics
+    :param estimator: Model object to be tested
+    :param param_grid: Dict with the diferent values to be tested
+    :param model_name: String with the title to be shown
+    :param X_train: Fataframe with the input data
+    :param y_train: Fataframe with the output data
+    """
+    grid_search = GridSearchCV(estimator=estimator, param_grid=param_grid, cv=5, scoring='neg_mean_squared_error')
+    grid_search.fit(X_train, y_train)
+    print(model_name)
+    print(grid_search.best_params_)
+    print(grid_search.best_score_)
+
+
 # Carreguem dataset d'exemple
 dataset = load_dataset(CSV_DATASET_PATH)
 
@@ -85,8 +101,6 @@ x = dataset.values[:,1:-1]
 y = dataset.values[:,0]
 
 
-
-
 # Divisió Train i Test
 from sklearn.model_selection import train_test_split
 X_train, X_test, y_train, y_test = train_test_split(x, y, test_size=0.3)
@@ -95,25 +109,51 @@ X_train, X_test, y_train, y_test = train_test_split(x, y, test_size=0.3)
 from sklearn.pipeline import Pipeline
 from sklearn.model_selection import GridSearchCV
 
-
 param_grid = {
     'penalty' : ['l2', 'l1'],
     'solver' : ['newton-cg', 'lbfgs', 'liblinear', 'sag', 'saga'],
     'warm_start' : ['True', 'False']
     }
 
+
 logistic_regressor = linear_model.LogisticRegression()
+gridSearch(logistic_regressor, param_grid, 'Logistic Regression', X_train, y_train)
+""" BEST CONFIGURATION = {'penalty': 'l1', 'solver': 'liblinear', 'warm_start': 'True'} """
 
-# X_train = standaritzador(X_train)
 
-
+# Repetim el mateix proces pero fent Estandaritzacio:
+logistic_regressor = linear_model.LogisticRegression()
+X_train = standaritzador(X_train)
 grid_search = GridSearchCV(estimator=logistic_regressor, param_grid=param_grid, cv=5, scoring='neg_mean_squared_error')
 grid_search.fit(X_train, y_train)
-
-print("Logistic Regression + Standarize")
+print("Logistic Regression + Estandaritzacio")
 print(grid_search.best_params_)
 print(grid_search.best_score_)
 
-""" BEST CONFIGURATION = {'penalty': 'l1', 'solver': 'liblinear', 'warm_start': 'True'} """
 
-#logistic_regression = linear_model.LogisticRegression()
+
+# Repetim el mateix proces pero fent Feature Selection:
+dataset = dataset.drop(['Mean', 'Variance', 'Coarseness', 'Contrast', 'Correlation', 'Dissimilarity', 'Kurtosis', 'Skewness'], axis=1)
+x = dataset.values[:,1:-1]
+X_train, X_test, y_train, y_test = train_test_split(x, y, test_size=0.3)
+grid_search = GridSearchCV(estimator=logistic_regressor, param_grid=param_grid, cv=5, scoring='neg_mean_squared_error')
+grid_search.fit(X_train, y_train)
+logistic_regressor = linear_model.LogisticRegression()
+print("Logistic Regression + Feature election")
+print(grid_search.best_params_)
+print(grid_search.best_score_)
+
+
+
+# Repetim el mateix proces pero fent Feature Selection + Estandaritzacio:
+logistic_regressor = linear_model.LogisticRegression()
+X_train = standaritzador(X_train)
+grid_search = GridSearchCV(estimator=logistic_regressor, param_grid=param_grid, cv=5, scoring='neg_mean_squared_error')
+grid_search.fit(X_train, y_train)
+print("Logistic Regression + Feature Selection + Estandaritzacio")
+print(grid_search.best_params_)
+print(grid_search.best_score_)
+
+
+
+
