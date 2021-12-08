@@ -72,15 +72,34 @@ def standaritzador(data):
     return scaler.transform(data)
 
 
+"""
 def gridSearch(estimator, param_grid, model_name, X_train, y_train):
-    """
+    
     Executes the GridSearchCV function ans shows the statistics
     :param estimator: Model object to be tested
     :param param_grid: Dict with the diferent values to be tested
     :param model_name: String with the title to be shown
     :param X_train: Fataframe with the input data
     :param y_train: Fataframe with the output data
+    
+    grid_search = GridSearchCV(estimator=estimator, param_grid=param_grid, cv=5, scoring='neg_mean_squared_error')
+    grid_search.fit(X_train, y_train)
+    print(model_name)
+    print(grid_search.best_params_)
+    print(grid_search.best_score_)
+"""
+
+def gridSearch(estimator, param_grid, model_name, dataset):
     """
+    Executes the GridSearchCV function ans shows the statistics
+    :param estimator: Model object to be tested
+    :param param_grid: Dict with the diferent values to be tested
+    :param model_name: String with the title to be shown
+    :param dataset: DataFrame amb la informació i dades del dataset
+    """
+    x = dataset.values[:,1:-1] # Guardem dades d'entrada
+    y = dataset.values[:,0] # Guardem dades sortida
+    X_train, X_test, y_train, y_test = train_test_split(x, y, test_size=0.3)
     grid_search = GridSearchCV(estimator=estimator, param_grid=param_grid, cv=5, scoring='neg_mean_squared_error')
     grid_search.fit(X_train, y_train)
     print(model_name)
@@ -132,9 +151,13 @@ param_grid = [
 ]
 
 
+logistic_regressor = linear_model.LogisticRegression() # Definim model reg. logistic
+gridSearch(logistic_regressor, param_grid, 'Logistic Regression', dataset)
+
+
 logistic_regressor = linear_model.LogisticRegression()
 gridSearch(logistic_regressor, param_grid, 'Logistic Regression', X_train, y_train)
-""" BEST CONFIGURATION = {'penalty': 'l1', 'solver': 'liblinear', 'warm_start': 'True'} """
+# BEST CONFIGURATION = {'penalty': 'l1', 'solver': 'liblinear', 'warm_start': 'True'}
 
 
 # Repetim el mateix proces pero fent Estandaritzacio:
