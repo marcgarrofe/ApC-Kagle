@@ -17,7 +17,7 @@ from sklearn import linear_model
 from sklearn.pipeline import make_pipeline
 
 # Constants :
-IMG_DATASET_PATH = 'Brain Tumor/Brain Tumor'
+IMG_DATASET_PATH = 'data/Img/Brain Tumor'
 CSV_DATASET_PATH = 'data/Brain Tumor.csv'
 IMG_RES_X = 240
 IMG_RES_Y = 240
@@ -87,6 +87,15 @@ def gridSearch(estimator, param_grid, model_name, X_train, y_train):
     print(grid_search.best_params_)
     print(grid_search.best_score_)
 
+def featureSelection(dataset, list_features):
+    """
+    Donada una llista dels atributs NO rellevants, els elimina del dataset
+    :param dataset: Objecte DataFrame amb les dades del dataset
+    :param list_features: Llista amb els labels de les columnes a eliminar
+    :return: Dataset amb les columnes rebudes eliminades
+    """
+    return dataset.drop(list_features, axis=1)
+
 
 # Carreguem dataset d'exemple
 dataset = load_dataset(CSV_DATASET_PATH)
@@ -109,11 +118,18 @@ X_train, X_test, y_train, y_test = train_test_split(x, y, test_size=0.3)
 from sklearn.pipeline import Pipeline
 from sklearn.model_selection import GridSearchCV
 
-param_grid = {
-    'penalty' : ['l2', 'l1'],
-    'solver' : ['newton-cg', 'lbfgs', 'liblinear', 'sag', 'saga'],
-    'warm_start' : ['True', 'False']
+param_grid = [
+    {
+        'penalty' : ['l2'],
+        'solver' : ['newton-cg', 'lbfgs', 'liblinear', 'sag', 'saga'],
+        'warm_start' : ['True', 'False']
+    },
+    {
+        'penalty' : ['l1'],
+        'solver' : ['liblinear', 'saga'],
+        'warm_start' : ['True', 'False']
     }
+]
 
 
 logistic_regressor = linear_model.LogisticRegression()
@@ -123,7 +139,7 @@ gridSearch(logistic_regressor, param_grid, 'Logistic Regression', X_train, y_tra
 
 # Repetim el mateix proces pero fent Estandaritzacio:
 logistic_regressor = linear_model.LogisticRegression()
-X_train = standaritzador(X_train)
+X_train_scaled = standaritzador(X_train)
 grid_search = GridSearchCV(estimator=logistic_regressor, param_grid=param_grid, cv=5, scoring='neg_mean_squared_error')
 grid_search.fit(X_train, y_train)
 print("Logistic Regression + Estandaritzacio")
