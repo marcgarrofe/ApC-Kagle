@@ -1,4 +1,5 @@
 
 *.xml
 *.pb
-.idea/*
+.idea
+.ipynb_checkpoints
