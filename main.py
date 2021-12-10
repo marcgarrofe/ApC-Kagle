@@ -193,6 +193,22 @@ print("Logistic Regression + Feature Selection + Estandaritzacio")
 print(grid_search.best_params_)
 print(grid_search.best_score_)
 
-
-
-
+def validateModel(model, dataset, standarize=False):
+    """
+    Given a model and a dataset, prints the elapsed time for fiting and the score of the model
+    :param model: Model to be tested
+    :param dataset: Fataframe object with the dataset data
+    :param standarize: Boleà que estandaritza les dades en cas que aquest sigui True
+    """
+    x = dataset.values[:,1:-1] # Guardem dades d'entrada
+    if standaritze:
+        x = standaritzador(x)
+    y = dataset.values[:,0] # Guardem dades sortida
+    X_train, X_test, y_train, y_test = train_test_split(x, y, test_size=SPLIT_RATIO)
+    start = time.time()
+    model.fit(X_train, y_train)
+    end = time.time()
+    print('Time: ', end - start)
+    print ('Testing Score:', model.score(X_test, y_test) )
+    print ('Testing MSE: ', np.mean((model.predict(X_test) - y_test)**2))
+    
