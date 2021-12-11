@@ -11,3 +11,4 @@ warnings.simplefilter("ignore")
 # Constants :
 CSV_DATASET_PATH = 'data/Brain Tumor.csv'
 SPLIT_RATIO = 0.2
+

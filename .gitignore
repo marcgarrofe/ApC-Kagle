@@ -3,3 +3,4 @@
 *.pb
 .idea
 .ipynb_checkpoints
+.vscode/settings.json
