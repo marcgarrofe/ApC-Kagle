@@ -20,7 +20,7 @@ import pickle
 from sklearn.ensemble import RandomForestClassifier
 
 # Constants
-MODEL_BASE_PATH = '../models/'
+MODEL_BASE_PATH = 'models/'
 
 def loadModel(modelPath):
     """

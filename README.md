@@ -29,12 +29,30 @@ A continuació mostrem els millors resultats d'accuracy obtinguts amde cada mode
 | Naive Bayes | Feature Selection | default | 97.25 % | 0.01 s |
 Aquells valors marcats com a 'default' signifiquen que no s'ha realitzat cap tipus de modificació. Per exemple, 'default' en preprocessing indica que no s'han tractat les dades i en hipermaràmetres inica que s'ha utilitzat la configuració per defecte del model.
 ## Demo
-Per tal de fer una prova, es pot fer servir amb la següent comanda
-``` python3 demo/demo.py --input here ```
+Per tal de fer una prova, es pot fer servir amb la següent comanda:
+
+``` python3 demo/demo.py ModelFileName.sav --input here ```
+
+On:
+* ModelFileName.sav indica el nom del arxiu que conté el model.
+* --input here indica la sequüència de 13 dades encadenades separades epr una ',' (coma).
+
+Es poden trobar possibles valors d'entrada en el document adjunt a la carpeta demo. Aquest arxiu conté dades que el model no coneix.
+
+Per exemple:
+
+``` python3 demo/demo.py RandomForest.sav 0.197433471679688,23.2397373922177,4.82076108018409,0.057362692872771,24.9598454758206,634.433355996892,701.371212121212,0.207747109103062,0.04315886134068,0.370373572705534,10.3560606060606,0.86380276292994,7.45834073120019E-155 ```
+
+Retorna una classificació '1' (TUMOR)
+
+``` python3 demo/demo.py RandomForest.sav 20.4353485107422,1227.15143951165,35.0307213672748,0.066763238434175,2.14462530729276,4.88203433514707,161.158675496689,0.225930928275797,0.051044784351564,0.502712050930512,5.08312582781457,0.952749246962317,7.4583407312002E-155 ```
+
+Retorna una classificació '0' (NO TUMOR)
 ## Conclusions
-El millor model que s'ha aconseguit ha estat Random Forest
-En comparació amb l'estat de l'art i els altres treballs que hem analitzat....
+Concluïm que Random Forest és el model que millor classifica les imatges celebrals.
+Tot i que Random Forest és el més lent, la diferència respecte els altres models és imperceptible i en l'àmbit que s'aplicaria no repercutiria doncs es busca la màxima precisió.
+
 ## Idees per treballar en un futur
-Crec que seria interesant indagar més en
+Per un treball a futur, es poden definir diferents models que analitzessin tot tipus de proves mèdiques com ara analítiques, biopsies, ecografíes, etc. per tal de tractar o detectar amb antel.lació malalties.
 ## Llicencia
 El projecte s’ha desenvolupat sota llicència MIT.
