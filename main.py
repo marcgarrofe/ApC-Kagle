@@ -10,7 +10,7 @@ import os
 from IPython.display import Image, display
 import seaborn as sns
 from sklearn.datasets import make_regression
-
+import time
 import scipy.stats
 
 from sklearn import linear_model
@@ -21,6 +21,8 @@ IMG_DATASET_PATH = 'data/Img/Brain Tumor'
 CSV_DATASET_PATH = 'data/Brain Tumor.csv'
 IMG_RES_X = 240
 IMG_RES_Y = 240
+
+SPLIT_RATIO = 0.2
 
 
 # Visualitzarem només 3 decimals per mostra
@@ -97,7 +99,9 @@ def gridSearch(estimator, param_grid, model_name, dataset):
     :param model_name: String with the title to be shown
     :param dataset: DataFrame amb la informació i dades del dataset
     """
-    x = dataset.values[:,1:-1] # Guardem dades d'entrada
+    # x = dataset.values[:,1:-1] # Guardem dades d'entrada
+    # x_labels = dataset.columns[1:-1]
+    x = dataset.drop('Class', axis=1).values
     y = dataset.values[:,0] # Guardem dades sortida
     X_train, X_test, y_train, y_test = train_test_split(x, y, test_size=0.3)
     grid_search = GridSearchCV(estimator=estimator, param_grid=param_grid, cv=5, scoring='neg_mean_squared_error')
@@ -193,6 +197,7 @@ print("Logistic Regression + Feature Selection + Estandaritzacio")
 print(grid_search.best_params_)
 print(grid_search.best_score_)
 
+
 def validateModel(model, dataset, standarize=False):
     """
     Given a model and a dataset, prints the elapsed time for fiting and the score of the model
@@ -201,7 +206,7 @@ def validateModel(model, dataset, standarize=False):
     :param standarize: Boleà que estandaritza les dades en cas que aquest sigui True
     """
     x = dataset.values[:,1:-1] # Guardem dades d'entrada
-    if standaritze:
+    if standarize:
         x = standaritzador(x)
     y = dataset.values[:,0] # Guardem dades sortida
     X_train, X_test, y_train, y_test = train_test_split(x, y, test_size=SPLIT_RATIO)
@@ -211,4 +216,19 @@ def validateModel(model, dataset, standarize=False):
     print('Time: ', end - start)
     print ('Testing Score:', model.score(X_test, y_test) )
     print ('Testing MSE: ', np.mean((model.predict(X_test) - y_test)**2))
-    
+
+
+import pickle
+
+
+MODELS_PATH = 'models'
+
+
+def storeModel(model, modelName):
+    """
+    Given a model, stores the model
+    :param model: Model Object to be stored
+    :param modelName: String with the name of the model
+    """
+    filename = str(MODELS_PATH) + str(modelName)
+    pickle.dump(model, open(filename, 'wb'))
